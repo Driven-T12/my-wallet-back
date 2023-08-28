@@ -11,6 +11,7 @@ export async function validateAuth(req, res, next) {
         if (!session) return res.status(404).send("Seu token não é válido")
 
         res.locals.token = token
+        res.locals.userId = session.userId
 
         next()
     } catch (err) {

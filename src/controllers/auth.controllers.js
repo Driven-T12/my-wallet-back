@@ -27,7 +27,7 @@ export async function signIn(req, res) {
         const isPasswordCorrect = bcrypt.compareSync(password, user.password)
         if (!isPasswordCorrect) return res.status(401).send("Senha incorreta!")
 
-        const token = uuid()
+        const token = uuid() 
         await db.collection("sessions").insertOne({ token, userId: user._id })
 
         res.send({ token, userName: user.name })
