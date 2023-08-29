@@ -1,5 +1,6 @@
 import dayjs from "dayjs"
 import { db } from "../database/database.connection.js"
+import { ObjectId } from "mongodb"
 
 export async function createTransaction(req, res) {
     const { value, description, type } = req.body
@@ -24,6 +25,24 @@ export async function readTransactions(req, res) {
             .toArray()
 
         res.send(transactions)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+export async function deleteTransaction(req, res) {
+    const { id } = req.params
+    const { userId } = res.locals
+
+    if (!id) return res.sendStatus(404)
+
+    try {
+        const result = await db
+            .collection("transactions")
+            .deleteOne({ _id: new ObjectId(id), userId })
+
+        if (result.deletedCount === 0) return res.sendStatus(401)
+        res.sendStatus(202)
     } catch (err) {
         res.status(500).send(err.message)
     }
